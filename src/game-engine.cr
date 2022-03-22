@@ -8,6 +8,7 @@ class GameEngine
   def initialize(@map : TextMap)
     @running = true
     STDIN.noecho!
+    STDIN.raw!
   end
 
   def input
@@ -15,39 +16,33 @@ class GameEngine
   end
 
   def update
-    if @key == 'q'
-      @running = false
+    if key = @key
+      @running = @map.update(key)
     end
-    if @key == 'a'
-      @map.children[0].move(-1, 0)
-    end
-    if @key == 'd'
-      @map.children[0].move(+1, 0)
-    end
-    if @key == 'w'
-      @map.children[0].move(0, -1)
-    end
-    if @key == 's'
-      @map.children[0].move(0, +1)
-    end
+    @key = nil
   end
 
   def output
-    # `tput clear`
-    puts "\033[2J\033[1;1H"
-    @map.render.each do |row|
-      puts row.join
+    # clear screen
+    puts "\u001B[2J"
+    @map.render.each_with_index do |row, i|
+      row.each_with_index do |c, j|
+        # moves to position i;j
+        puts "\u001B[#{i};#{j}H"
+        # print the character
+        puts "#{c}"
+      end
     end
+    # hide cursor
+    puts "\u001B[?25l"
   end
 
   def run
+    output
     while @running
-      elapsed_time = Time.measure do
-        input
-        update
-        output
-      end
-      sleep((33.milliseconds - elapsed_time) / 1000) # 30fps
+      input
+      update
+      output
     end
   end
 end

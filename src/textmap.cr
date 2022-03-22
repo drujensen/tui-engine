@@ -51,6 +51,14 @@ class TextMap
     @visible = true
   end
 
+  def update(key : Char) : Bool
+    result = handle_key(key)
+    children.each do |child|
+      result = false unless child.update(key)
+    end
+    return result
+  end
+
   def render : Array(Array(Char))
     screen = Array(Array(Char)).new
     (0...@height).each do |row|
@@ -133,5 +141,9 @@ class TextMap
   end
 
   def action(sibling : TextMap, x : Int8, y : Int8)
+  end
+
+  def handle_key(key : Char) : Bool
+    return true
   end
 end
