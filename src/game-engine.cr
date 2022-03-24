@@ -9,10 +9,16 @@ class GameEngine
     @running = true
     STDIN.noecho!
     STDIN.raw!
+    STDIN.read_timeout = 0
+    # hide cursor
+    puts "\u001B[?25l"
   end
 
   def input
-    @key = STDIN.read_char
+    begin
+      @key = STDIN.read_char
+    rescue
+    end
   end
 
   def update
@@ -23,18 +29,17 @@ class GameEngine
   end
 
   def output
+    return unless @map.is_dirty?
     # clear screen
     puts "\u001B[2J"
     @map.render.each_with_index do |row, i|
       row.each_with_index do |c, j|
         # moves to position i;j
-        puts "\u001B[#{i};#{j}H"
+        puts "\u001B[#{i + 1};#{j + 1}H"
         # print the character
         puts "#{c}"
       end
     end
-    # hide cursor
-    puts "\u001B[?25l"
   end
 
   def run
@@ -44,5 +49,8 @@ class GameEngine
       update
       output
     end
+    # show cursor
+    puts "\u001B[?25h"
+    STDIN.cooked!
   end
 end

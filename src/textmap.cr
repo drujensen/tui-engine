@@ -3,6 +3,7 @@ class TextMap
   property height : Int8
   property width : Int8
   property text : Array(Array(Char))
+  property dirty : Bool
 
   # current position in parent map
   property parent : TextMap?
@@ -11,7 +12,20 @@ class TextMap
   property y : Int8 = 0
   property z : Int8 = 0
 
-  def initialize(@height : Int8, @width : Int8, @fill : Char = ' ')
+  def initialize(height : Int32? = nil, width : Int32? = nil, @fill : Char = ' ')
+    if w = width
+      @width = w.to_i8
+    else
+      @width = `tput cols`.to_i8 - 2
+    end
+
+    if h = height
+      @height = h.to_i8
+    else
+      @height = `tput lines`.to_i8 - 2
+    end
+
+    @dirty = true
     @children = [] of TextMap
     @text = Array(Array(Char)).new
     (0...@height).each do
@@ -19,21 +33,37 @@ class TextMap
     end
   end
 
-  def add(@parent : TextMap, @x : Int8, @y : Int8, @z : Int8 = 1)
+  def add(@parent : TextMap, x : Int32? = nil, y : Int32? = nil, @z : Int8 = 1)
+    if new_x = x
+      @x = x.to_i8
+    else
+      @x = ((parent.width - @width) / 2).to_i8
+    end
+
+    if new_y = y
+      @y = y.to_i8
+    else
+      @y = ((parent.height - @height) / 2).to_i8
+    end
+
     if parent = @parent
       parent.children << self
     end
+    @dirty = true
   end
 
   def set(@x : Int8, @y : Int8)
+    @dirty = true
   end
 
   def set(@x : Int8, @y : Int8, @z : Int8)
+    @dirty = true
   end
 
   def move(x : Int8, y : Int8)
     @x = @x + x
     @y = @y + y
+    @dirty = true
   end
 
   def remove
@@ -69,6 +99,8 @@ class TextMap
   end
 
   def render(screen : Array(Array(Char))) : Array(Array(Char))
+    @dirty = false
+
     return screen if obs
     return screen if collision
 
@@ -82,8 +114,16 @@ class TextMap
     @children.sort_by(&.z).each do |child|
       screen = child.render(screen) if child.visible
     end
-
     return screen
+  end
+
+  def is_dirty?
+    result = false
+    result = true if @dirty
+    @children.each do |child|
+      result = true if child.is_dirty?
+    end
+    return result
   end
 
   def obs
@@ -91,13 +131,13 @@ class TextMap
       if x < 0
         bump("left", x, y)
         return true
-      elsif x + @width >= parent.width
+      elsif x + @width > parent.width
         bump("right", x + @width, y + @height)
         return true
       elsif y < 0
         bump("top", x, y)
         return true
-      elsif y + @height >= parent.height
+      elsif y + @height > parent.height
         bump("bottom", x + width, y + @height)
         return true
       end
