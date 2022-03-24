@@ -1,7 +1,7 @@
 require "spec"
 require "../src/*"
 
-class World < TextMap
+class World < Map
   def handle_key(key : Char) : Bool
     if key == 'q'
       return false
@@ -10,8 +10,8 @@ class World < TextMap
   end
 end
 
-class Group < TextMap
-  def bump(dir : String, x : Int8, y : Int8)
+class Group < Map
+  def bump(dir : String, x : Int32, y : Int32)
     if dir == "top"
       move(0, +1)
     end
@@ -29,7 +29,7 @@ class Group < TextMap
     end
   end
 
-  def action(sibling : TextMap, x : Int8, y : Int8)
+  def action(sibling : Map, x : Int32, y : Int32)
     puts "hit #{sibling}"
   end
 

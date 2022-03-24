@@ -1,49 +1,49 @@
-class TextMap
+class Map
   property visible : Bool = true
-  property height : Int8
-  property width : Int8
+  property height : Int32
+  property width : Int32
   property text : Array(Array(Char))
   property dirty : Bool
 
   # current position in parent map
-  property parent : TextMap?
-  property children : Array(TextMap)
-  property x : Int8 = 0
-  property y : Int8 = 0
-  property z : Int8 = 0
+  property parent : Map?
+  property children : Array(Map)
+  property x : Int32 = 0
+  property y : Int32 = 0
+  property z : Int32 = 0
 
   def initialize(height : Int32? = nil, width : Int32? = nil, @fill : Char = ' ')
     if w = width
-      @width = w.to_i8
+      @width = w
     else
-      @width = `tput cols`.to_i8 - 2
+      @width = `tput cols`.to_i - 2
     end
 
     if h = height
-      @height = h.to_i8
+      @height = h
     else
-      @height = `tput lines`.to_i8 - 2
+      @height = `tput lines`.to_i - 2
     end
 
     @dirty = true
-    @children = [] of TextMap
+    @children = [] of Map
     @text = Array(Array(Char)).new
     (0...@height).each do
       @text << Array.new(@width, @fill)
     end
   end
 
-  def add(@parent : TextMap, x : Int32? = nil, y : Int32? = nil, @z : Int8 = 1)
+  def add(@parent : Map, x : Int32? = nil, y : Int32? = nil, @z : Int32 = 1)
     if new_x = x
-      @x = x.to_i8
+      @x = new_x
     else
-      @x = ((parent.width - @width) / 2).to_i8
+      @x = ((parent.width - @width) / 2).to_i
     end
 
     if new_y = y
-      @y = y.to_i8
+      @y = new_y
     else
-      @y = ((parent.height - @height) / 2).to_i8
+      @y = ((parent.height - @height) / 2).to_i
     end
 
     if parent = @parent
@@ -52,15 +52,15 @@ class TextMap
     @dirty = true
   end
 
-  def set(@x : Int8, @y : Int8)
+  def set(@x : Int32, @y : Int32)
     @dirty = true
   end
 
-  def set(@x : Int8, @y : Int8, @z : Int8)
+  def set(@x : Int32, @y : Int32, @z : Int32)
     @dirty = true
   end
 
-  def move(x : Int8, y : Int8)
+  def move(x : Int32, y : Int32)
     @x = @x + x
     @y = @y + y
     @dirty = true
@@ -177,10 +177,10 @@ class TextMap
     return false
   end
 
-  def bump(dir : String, x : Int8, y : Int8)
+  def bump(dir : String, x : Int32, y : Int32)
   end
 
-  def action(sibling : TextMap, x : Int8, y : Int8)
+  def action(sibling : Map, x : Int32, y : Int32)
   end
 
   def handle_key(key : Char) : Bool

@@ -1,11 +1,11 @@
-require "./textmap"
+require "./*"
 
 class GameEngine
-  property map : TextMap
+  property map : Map
   property running : Bool
   property key : Char?
 
-  def initialize(@map : TextMap)
+  def initialize(@map : Map)
     @running = true
     STDIN.noecho!
     STDIN.raw!
