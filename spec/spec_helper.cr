@@ -1,7 +1,7 @@
 require "spec"
 require "../src/*"
 
-class World < Map
+class World < FrameMap
   def handle_key(key : Char) : Bool
     if key == 'q'
       return false

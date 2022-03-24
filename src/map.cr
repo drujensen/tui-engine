@@ -4,6 +4,7 @@ class Map
   property width : Int32
   property text : Array(Array(Char))
   property dirty : Bool
+  property fill : Char
 
   # current position in parent map
   property parent : Map?
@@ -12,7 +13,7 @@ class Map
   property y : Int32 = 0
   property z : Int32 = 0
 
-  def initialize(height : Int32? = nil, width : Int32? = nil, @fill : Char = ' ')
+  def initialize(height : Int32? = nil, width : Int32? = nil, fill : Char? = nil)
     if w = width
       @width = w
     else
@@ -23,6 +24,12 @@ class Map
       @height = h
     else
       @height = `tput lines`.to_i - 2
+    end
+
+    if f = fill
+      @fill = f
+    else
+      @fill = ' '
     end
 
     @dirty = true
