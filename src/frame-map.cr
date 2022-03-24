@@ -7,15 +7,14 @@ class FrameMap < Map
     vertical = '|'
     horizontal = '-'
 
-    @text[0][0] = corner
-    (1..@width - 2).each { |i| @text[0][i] = horizontal }
-    @text[0][@width - 1] = corner
+    [0, @height - 1].each do |row|
+      @text[row][0] = corner
+      (1..@width - 2).each { |i| @text[row][i] = horizontal }
+      @text[row][@width - 1] = corner
+    end
 
-    (1..@height - 2).each { |j| @text[j][0] = vertical }
-    (1..@height - 2).each { |j| @text[j][@width - 1] = vertical }
-
-    @text[@height - 1][0] = corner
-    (1..@width - 2).each { |i| @text[@height - 1][i] = horizontal }
-    @text[@height - 1][@width - 1] = corner
+    [0, @width - 1].each do |col|
+      (1..@height - 2).each { |j| @text[j][col] = vertical }
+    end
   end
 end
