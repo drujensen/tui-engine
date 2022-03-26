@@ -155,14 +155,14 @@ class Map
   def collision
     if parent = @parent
       siblings = parent.children.reject(self).select { |child| child.z == @z }
+      l1 = @x
+      r1 = @x + @width
+      t1 = @y
+      b1 = @y + @height
       siblings.each do |sibling|
         result = true
-        l1 = @x
-        r1 = @x + @width
         l2 = sibling.x
         r2 = sibling.x + sibling.width
-        t1 = @y
-        b1 = @y + @height
         t2 = sibling.y
         b2 = sibling.y + sibling.height
 
