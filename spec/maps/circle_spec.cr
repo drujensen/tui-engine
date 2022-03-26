@@ -1,8 +1,8 @@
 require "./spec_helper"
 
-describe CircleMap do
+describe Maps::Circle do
   it "creates a new Circle Map" do
-    world = CircleMap.new(radius: 5, fill: '+')
+    world = Maps::Circle.new(radius: 5, fill: '+')
     world.height.should eq 10
     world.width.should eq 10
     world.render.each do |row|

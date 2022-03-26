@@ -1,15 +1,15 @@
 require "./spec_helper"
 
-describe SpriteMap do
+describe Maps::Sprite do
   it "creates a new Sprite Map" do
-    map = SpriteMap.new(width: 10, height: 10)
+    map = Maps::Sprite.new(width: 10, height: 10)
     map.width.should eq 10
     map.height.should eq 10
     map.sprites.size.should eq 1
   end
 
   it "supports adding a sprite" do
-    map = SpriteMap.new(width: 9, height: 4)
+    map = Maps::Sprite.new(width: 9, height: 4)
     map.add_sprite <<-SPRITE
     +-------+
     | o   o |
@@ -22,7 +22,7 @@ describe SpriteMap do
   end
 
   it "supports swapping sprites" do
-    map = SpriteMap.new(width: 9, height: 4)
+    map = Maps::Sprite.new(width: 9, height: 4)
     map.add_sprite <<-SPRITE
     +-------+
     | o   o |

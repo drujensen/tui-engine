@@ -1,11 +1,12 @@
-require "./*"
+require "./events/*"
+require "./maps/*"
 
-class GameEngine
-  property map : Map
+class TuiEngine
+  property map : Maps::Base
   property running : Bool
   property key : Char?
 
-  def initialize(@map : Map)
+  def initialize(@map : Maps::Base)
     @running = true
     STDIN.noecho!
     STDIN.raw!
@@ -19,38 +20,52 @@ class GameEngine
       @key = STDIN.read_char
     rescue
     end
-  end
-
-  def update
     if key = @key
-      @running = @map.update(key)
+      Events::Event.key_event(key)
     end
     @key = nil
   end
 
   def output
     return unless @map.is_dirty?
+
     # clear screen
     puts "\u001B[2J"
     @map.render.each_with_index do |row, i|
       row.each_with_index do |c, j|
         # moves to position i;j
         puts "\u001B[#{i + 1};#{j + 1}H"
+
+        # TODO: print the color
+
         # print the character
         puts "#{c}"
+
+        # TODO: reset
       end
     end
   end
 
   def run
+    @running = true
     output
+
     while @running
-      input
-      update
-      output
+      elapsed_time = Time.measure do
+        input
+        Events::Event.tick_event
+        output
+      end
+      # 30 fps
+      sleep(33.milliseconds - elapsed_time / 1000)
     end
+
     # show cursor
     puts "\u001B[?25h"
     STDIN.cooked!
+  end
+
+  def stop
+    @running = false
   end
 end

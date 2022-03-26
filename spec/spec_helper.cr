@@ -1,36 +1,36 @@
 require "spec"
-require "../src/*"
+require "../src/**"
 
-class World < FrameMap
-  def handle_key(key : Char) : Bool
-    if key == 'q'
-      return false
+class MyGame < TuiEngine
+  def initialize(map : Maps::Base)
+    super(map)
+    Events::Event.register("key", 1) do |event|
+      if event.as(Events::Key).key == 'q'
+        stop
+      end
+      true
     end
-    return true
   end
 end
 
-class Group < Map
-  def bump(dir : String, x : Int32, y : Int32)
-    if dir == "top"
-      move(0, +1)
-    end
+class World < Maps::Frame
+end
 
-    if dir == "bottom"
-      move(0, -1)
+class Group < Maps::Base
+  def initialize(height : Int32, width : Int32, fill : Char)
+    super(height: height, width: width, fill: fill)
+    Events::Event.register("key", 2) do |event|
+      key = event.as(Events::Key)
+      handle_key(key.key)
     end
-
-    if dir == "left"
-      move(+1, 0)
+    Events::Event.register("bump", 1) do |event|
+      bump = event.as(Events::Bump)
+      handle_bump(bump.dir, bump.x, bump.y)
     end
-
-    if dir == "right"
-      move(-1, 0)
+    Events::Event.register("action", 1) do |event|
+      action = event.as(Events::Action)
+      handle_action(action.sibling, action.x, action.y)
     end
-  end
-
-  def action(sibling : Map, x : Int32, y : Int32)
-    puts "hit #{sibling}"
   end
 
   def handle_key(key : Char) : Bool
@@ -50,6 +50,31 @@ class Group < Map
       move(0, -1)
     end
 
-    return true
+    return false
+  end
+
+  def handle_bump(dir : String, x : Int32, y : Int32) : Bool
+    if dir == "top"
+      move(0, +1)
+    end
+
+    if dir == "bottom"
+      move(0, -1)
+    end
+
+    if dir == "left"
+      move(+1, 0)
+    end
+
+    if dir == "right"
+      move(-1, 0)
+    end
+
+    return false
+  end
+
+  def handle_action(sibling : Maps::Base, x : Int32, y : Int32) : Bool
+    puts "hit #{sibling}"
+    return false
   end
 end
