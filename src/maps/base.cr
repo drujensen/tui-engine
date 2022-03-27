@@ -104,9 +104,16 @@ module Maps
       return screen if obs
       return screen if collision
 
+      parent_x = @x
+      parent_y = @y
+      if parent = @parent
+        parent_x = parent.x + @x
+        parent_y = parent.y + @y
+      end
+
       # render at x,y position
-      (y...(y + @height)).each_with_index do |row, i|
-        (x...(x + @width)).each_with_index do |col, j|
+      (parent_y...(parent_y + @height)).each_with_index do |row, i|
+        (parent_x...(parent_x + @width)).each_with_index do |col, j|
           screen[row][col] = @text[i][j]
         end
       end

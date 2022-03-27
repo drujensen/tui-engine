@@ -22,9 +22,9 @@ module Events
       @@handlers.delete(handler)
     end
 
-    def self.message_event(message : String)
+    def self.message_event(key : String, value : String)
       @@handlers.select { |h| h.type == "message" }.each do |handler|
-        handler.method.call(Message.new(message))
+        handler.method.call(Message.new(key, value))
       end
     end
 
