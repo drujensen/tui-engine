@@ -68,4 +68,15 @@ class TuiEngine
   def stop
     @running = false
   end
+
+  def on_message(&block : String, String -> Nil) : Events::EventHandler
+    return Events::Event.register("message") do |event|
+      message_event = event.as(Events::Message)
+      block.call(message_event.key, message_event.value)
+    end
+  end
+
+  def off(event : Events::EventHandler)
+    Events::Event.deregister(event)
+  end
 end

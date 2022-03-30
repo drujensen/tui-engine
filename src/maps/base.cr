@@ -101,6 +101,7 @@ module Maps
     def render(screen : Array(Array(Char))) : Array(Array(Char))
       @dirty = false
 
+      return screen unless @visible
       return screen if obs
       return screen if collision
 
@@ -182,6 +183,48 @@ module Maps
         end
       end
       return false
+    end
+
+    def on_key(&block : Char -> Nil) : Events::EventHandler
+      return Events::Event.register("key") do |event|
+        key_event = event.as(Events::Key)
+        block.call(key_event.key)
+      end
+    end
+
+    def on_tick(&block : Nil -> Nil) : Events::EventHandler
+      return Events::Event.register("tick") do
+        block.call
+      end
+    end
+
+    def on_bump(&block : String, Int32, Int32 -> Nil) : Events::EventHandler
+      return Events::Event.register("bump") do |event|
+        bump_event = event.as(Events::Bump)
+        block.call(bump_event.dir, bump_event.x, bump_event.y)
+      end
+    end
+
+    def on_action(&block : Maps::Base, Int32, Int32 -> Nil) : Events::EventHandler
+      return Events::Event.register("action") do |event|
+        action_event = event.as(Events::Action)
+        block.call(action_event.sibling, action_event.x, action_event.y)
+      end
+    end
+
+    def on_message(&block : String, String -> Nil) : Events::EventHandler
+      return Events::Event.register("message") do |event|
+        message_event = event.as(Events::Message)
+        block.call(message_event.key, message_event.value)
+      end
+    end
+
+    def off(event : Events::EventHandler)
+      Events::Event.deregister(event)
+    end
+
+    def send(key : String, value : String)
+      Events::Event.message_event(key: key, value: value)
     end
   end
 end
