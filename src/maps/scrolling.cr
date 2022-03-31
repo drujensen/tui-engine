@@ -3,43 +3,57 @@ require "./base"
 module Maps
   class Scrolling < Base
     property speed : Int32
-    property chars : Array(Char)
+    property chars : Array(Array(Char))
+    property active : Int32 = 0
 
     def initialize(text : String, speed : Int32? = 30)
-      super(width: text.size, height: 1)
       @speed = speed
-      @chars = text.chars
+      max_width = 0
+      @chars = Array(Array(Char)).new
+      text.each_line do |line|
+        @chars << line.chars
+        max_width = line.chars.size if line.chars.size > max_width
+      end
+      super(width: max_width, height: 1)
     end
 
     def animate
-      @text = Array(Array(Char)).new
-      @text << Array(Char).new(@chars.size, ' ')
-
+      @text[0] = Array(Char).new(width, ' ')
+      active = 0
       count = 0
       pos = 0
+
       tick_event = on_tick do
-        count = count + 1
-        if count > (30 / speed).to_i
-          if pos < @chars.size
-            @text[0][pos] = @chars[pos]
+        if active < @chars.size && pos < @chars[active].size
+          count = count + 1
+          if count > (30 / speed).to_i
+            @text[0][pos] = @chars[active][pos]
+            pos = pos + 1
+            count = 0
           end
-          pos = pos + 1
-          count = 0
         end
       end
 
       key_event = on_key do |key|
         if key == ' '
-          if pos < @chars.size
-            @text[0] = @chars
-            pos = @chars.size
+          if active < @chars.size && pos < @chars[active].size
+            @chars[active].each_with_index do |char, i|
+              @text[0][i] = char
+            end
+            pos = @chars[active].size
           else
-            @text[0] = Array(Char).new(@chars.size, ' ')
+            if active < @chars.size
+              @text[0] = Array(Char).new(width, ' ')
+              active = active + 1
+              count = 0
+              pos = 0
+            end
           end
         end
       end
 
-      if pos >= @chars.size
+      if active >= @chars.size
+        off(key_event)
         off(tick_event)
       end
     end
