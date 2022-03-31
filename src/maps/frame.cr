@@ -7,7 +7,7 @@ module Maps
 
       corner = '+'
       vertical = '|'
-      horizontal = '-'
+      horizontal = '─'
 
       [0, @height - 1].each do |row|
         @text[row][0] = corner
@@ -21,26 +21,6 @@ module Maps
 
       title = Maps::Text.new(title)
       title.add(self, x: 2, y: 0, z: self.z)
-    end
-
-    def obs
-      if parent = @parent
-        if @x < 1
-          Events::Event.message_event(key: "cmd", value: "quit")
-          Events::Event.bump_event("left", @x, @y)
-          return true
-        elsif @x + @width > parent.width - 1
-          Events::Event.bump_event("right", @x + @width, @y + @height)
-          return true
-        elsif @y < 1
-          Events::Event.bump_event("top", @x, @y)
-          return true
-        elsif @y + @height > parent.height - 1
-          Events::Event.bump_event("bottom", @x + @width, @y + @height)
-          return true
-        end
-      end
-      return false
     end
   end
 end

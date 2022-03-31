@@ -192,7 +192,7 @@ module Maps
       end
     end
 
-    def on_tick(&block : Nil -> Nil) : Events::EventHandler
+    def on_tick(&block) : Events::EventHandler
       return Events::Event.register("tick") do
         block.call
       end
