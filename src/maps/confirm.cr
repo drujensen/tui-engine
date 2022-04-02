@@ -13,7 +13,7 @@ class Maps::Confirm < Maps::Sprite
     ┌─#{@title}#{"─" * (width - @title.size)}─┐
     │ #{@question}#{" " * (width - @question.size)} │
     │ #{" " * width} │
-    │ [yes]#{" " * (width - 9)}[no] │
+    │ [Y]es#{" " * (width - 9)}[N]o │
     └─#{"─" * width}─┘
     SPRITE
 
@@ -25,11 +25,11 @@ class Maps::Confirm < Maps::Sprite
   end
 
   def handle_key(key : Char)
-    if key == 'y'
+    if key == 'y' || key == 'Y'
       @result = "yes"
     elsif key == '\r'
       @result = "yes"
-    elsif key == 'n'
+    elsif key == 'n' || key == 'N'
       @result = "no"
     elsif key == '\e'
       @result = "no"
