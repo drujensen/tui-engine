@@ -5,10 +5,14 @@ module Maps
     property sprites : Array(Array(Array(Char)))
     property active : Int32 = 0
 
-    def initialize(width : Int32? = nil, height : Int32? = nil)
+    def initialize(sprite : String)
+      chars = sprite.split('\n').map(&.chars)
+      width = chars.max_by(&.size).size
+      height = chars.size
       super(width: width, height: height)
       @sprites = Array(Array(Array(Char))).new
-      @sprites << @text
+      @sprites << chars
+      set_active 0
     end
 
     def add_sprite(sprite : String) : Int32

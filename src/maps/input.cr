@@ -9,14 +9,14 @@ class Maps::Input < Maps::Sprite
 
   def initialize(@key : String, @title : String, @question : String)
     width = [@title.size, @question.size].max
-    super(width: width + 4, height: 5)
-    add_sprite <<-SPRITE
+    super(sprite: <<-SPRITE
     ┌─#{@title}#{"─" * (width - @title.size)}─┐
     │ #{@question}#{" " * (width - @question.size)} │
     │ #{" " * width} │
     │ █#{" " * (width - 1)} │
     └─#{"─" * width}─┘
     SPRITE
+    )
 
     @result = ""
     @key_event = on_key do |key|

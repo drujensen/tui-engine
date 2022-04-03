@@ -47,9 +47,9 @@ module Events
       end
     end
 
-    def self.action_event(me : Maps::Base, sibling : Maps::Base, x : Int32, y : Int32)
+    def self.action_event(me : Maps::Base, sibling : Maps::Base)
       @@handlers.select { |h| h.type == "action" && h.me == me }.each do |handler|
-        handler.method.call(Action.new(sibling, x, y))
+        handler.method.call(Action.new(sibling))
       end
     end
   end

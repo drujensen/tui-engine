@@ -115,7 +115,7 @@ module Maps
       # render at x,y position
       (parent_y...(parent_y + @height)).each_with_index do |row, i|
         (parent_x...(parent_x + @width)).each_with_index do |col, j|
-          screen[row][col] = @text[i][j]
+          screen[row][col] = @text[i][j] if @text[i][j]?
         end
       end
 
@@ -155,7 +155,7 @@ module Maps
 
     def trigger_actions
       if parent = @parent
-        siblings = parent.children.reject(self).select { |child| child.z == @z }
+        siblings = parent.children.reject(self)
         l1 = @x
         r1 = @x + @width
         t1 = @y
@@ -177,12 +177,10 @@ module Maps
           end
 
           if result
-            Events::Event.action_event(self, sibling, @x, @y)
-            return true
+            Events::Event.action_event(self, sibling)
           end
         end
       end
-      return false
     end
 
     def on_tick(&block) : Events::EventHandler
@@ -212,10 +210,10 @@ module Maps
       end
     end
 
-    def on_action(&block : Maps::Base, Int32, Int32 -> Nil) : Events::EventHandler
+    def on_action(&block : Maps::Base -> Nil) : Events::EventHandler
       return Events::Event.register(self, "action") do |event|
         action_event = event.as(Events::Action)
-        block.call(action_event.sibling, action_event.x, action_event.y)
+        block.call(action_event.sibling)
       end
     end
 
