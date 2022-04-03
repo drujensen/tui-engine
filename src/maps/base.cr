@@ -102,8 +102,8 @@ module Maps
       @dirty = false
 
       return screen unless @visible
-      return screen if obs
-      return screen if collision
+      return screen if trigger_bumps
+      trigger_actions
 
       parent_x = @x
       parent_y = @y
@@ -134,7 +134,7 @@ module Maps
       return result
     end
 
-    def obs
+    def trigger_bumps
       if parent = @parent
         if x < 0
           Events::Event.bump_event(self, "left", x, y)
@@ -153,7 +153,7 @@ module Maps
       return false
     end
 
-    def collision
+    def trigger_actions
       if parent = @parent
         siblings = parent.children.reject(self).select { |child| child.z == @z }
         l1 = @x
