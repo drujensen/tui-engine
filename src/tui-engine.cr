@@ -5,6 +5,7 @@ class TuiEngine
   property map : Maps::Base
   property running : Bool
   property key : Char?
+  property visible : Bool = true
 
   def initialize(@map : Maps::Base)
     @running = true

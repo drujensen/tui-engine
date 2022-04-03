@@ -19,7 +19,7 @@ class Maps::Confirm < Maps::Sprite
 
     @result = ""
     @key_event = on_key do |key|
-      handle_key(key) if visible
+      handle_key(key)
     end
     @dirty = true
   end
@@ -38,10 +38,6 @@ class Maps::Confirm < Maps::Sprite
     end
 
     hide
-    if event = @key_event
-      off(event)
-    end
-
     send(key: @key, value: @result)
   end
 end

@@ -20,7 +20,7 @@ class Maps::Input < Maps::Sprite
 
     @result = ""
     @key_event = on_key do |key|
-      handle_key(key) if visible
+      handle_key(key)
     end
   end
 

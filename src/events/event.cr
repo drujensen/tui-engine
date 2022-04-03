@@ -30,7 +30,7 @@ module Events
     end
 
     def self.key_event(key : Char)
-      @@handlers.select { |h| h.type == "key" }.each do |handler|
+      @@handlers.select { |h| h.type == "key" && h.me.visible }.each do |handler|
         handler.method.call(Key.new(key))
       end
     end
