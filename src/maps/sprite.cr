@@ -16,9 +16,11 @@ module Maps
     end
 
     def add_sprite(sprite : String) : Int32
-      @sprites << sprite.split('\n').map(&.chars)
+      chars = sprite.split('\n').map(&.chars)
+      @width = [@width, chars.max_by(&.size).size].max
+      @height = [@height, chars.size].max
+      @sprites << chars
       pos = @sprites.size - 1
-      set_active pos
       return pos
     end
 

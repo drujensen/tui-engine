@@ -115,7 +115,7 @@ module Maps
       # render at x,y position
       (parent_y...(parent_y + @height)).each_with_index do |row, i|
         (parent_x...(parent_x + @width)).each_with_index do |col, j|
-          screen[row][col] = @text[i][j] if @text[i][j]?
+          screen[row][col] = @text[i][j] if @text[i]? && @text[i][j]?
         end
       end
 
