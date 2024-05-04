@@ -18,15 +18,15 @@ end
 class Group < Maps::Base
   def initialize(height : Int32, width : Int32, fill : Char)
     super(height: height, width: width, fill: fill)
-    Events::Event.register("key") do |event|
+    Events::Event.register(self, "key") do |event|
       key = event.as(Events::Key)
       handle_key(key.key)
     end
-    Events::Event.register("bump") do |event|
+    Events::Event.register(self, "bump") do |event|
       bump = event.as(Events::Bump)
       handle_bump(bump.dir, bump.x, bump.y)
     end
-    Events::Event.register("action") do |event|
+    Events::Event.register(self, "action") do |event|
       action = event.as(Events::Action)
       handle_action(action.sibling, action.x, action.y)
     end
